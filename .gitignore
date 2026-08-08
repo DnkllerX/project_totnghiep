@@ -1,0 +1,31 @@
+# ==== Build output ====
+target/
+
+# ==== IDE ====
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.smarttomcat/
+*.userlibraries
+
+# ==== AI agent / local tooling ====
+.agents/
+
+# ==== OS ====
+.DS_Store
+Thumbs.db
+
+# ==== Logs ====
+*.log
+logs/
+
+# ==== Sensitive local config (chua secret that) ====
+# Giu lai *.properties.example lam template, tao file that truc tiep tren server
+#src/main/resources/db.properties
+
+
+# Neu sau nay doi y muon giau luon Gemini/reCAPTCHA key thi bo comment 2 dong duoi:
+# src/main/resources/gemini.properties
+# src/main/resources/recaptcha.properties

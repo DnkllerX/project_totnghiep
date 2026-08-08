@@ -1,0 +1,73 @@
+
+package vinscape.tests.auth;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import vinscape.base.BaseTest;
+import vinscape.config.TestAccount;
+import vinscape.pages.AppShellPage;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+/**
+ * Test chuc nang Dang xuat (/app/logout - LogoutServlet)
+ * va bug da fix: "Back button cache exposure" sau khi logout.
+ */
+@DisplayName("Đăng xuất")
+class LogoutTest extends BaseTest {
+
+    @ParameterizedTest(name = "Đăng xuất tài khoản {0} -> quay lại trang login")
+    @EnumSource(TestAccount.class)
+    void logout_shouldRedirectToLogin(TestAccount account) {
+        loginAs(account);
+
+        AppShellPage shell = new AppShellPage(page, baseUrl);
+        shell.logout();
+
+        assertThat(page).hasURL(baseUrl + "/login");
+    }
+
+    @Test
+    @DisplayName("Sau khi đăng xuất, truy cập lại URL trong /app/* phải bị đá về login (không đọc được cache)")
+    void afterLogout_directAccessToProtectedUrl_shouldRedirectToLogin() {
+        loginAs(TestAccount.SHAREHOLDER);
+        AppShellPage shell = new AppShellPage(page, baseUrl);
+        shell.logout();
+
+        page.navigate(baseUrl + "/app/dashboard");
+        assertThat(page).hasURL(baseUrl + "/login");
+    }
+
+    @Test
+    @DisplayName("Sau khi đăng xuất, bấm nút Back không được hiển thị lại trang cũ (Cache-Control: no-store)")
+    void afterLogout_browserBackButton_shouldNotExposeOldPage() {
+        loginAs(TestAccount.ADMIN);
+        String dashboardUrl = page.url();
+
+        AppShellPage shell = new AppShellPage(page, baseUrl);
+        shell.logout();
+
+        page.goBack();
+        // Do AuthFilter dat Cache-Control: no-cache, no-store, must-revalidate cho moi trang /app/*,
+        // trinh duyet buoc phai goi lai server thay vi lay tu bfcache -> se bi AuthFilter chan va redirect ve /login.
+        page.waitForURL("**/login");
+        assertThat(page).hasURL(baseUrl + "/login");
+    }
+
+    @Test
+    @DisplayName("Đăng xuất xong, đăng nhập lại bằng tài khoản khác phải nạp đúng menu của role mới")
+    void logoutThenLoginAsDifferentRole_shouldShowCorrectMenu() {
+        loginAs(TestAccount.SHAREHOLDER);
+        AppShellPage shell = new AppShellPage(page, baseUrl);
+        assertThat(shell.navItem("Ký nhận Cổ phần")).isVisible();
+
+        shell.logout();
+
+        loginAs(TestAccount.ADMIN);
+        assertThat(shell.navItem("Quản lý Cổ đông")).isVisible();
+        assertThat(page.locator(".nav-item", new com.microsoft.playwright.Page.LocatorOptions()
+                .setHasText("Ký nhận Cổ phần"))).hasCount(0);
+    }
+}

@@ -1,0 +1,31 @@
+# Cau hinh SMTP gui email (reset mat khau, thong bao duyet tai khoan) - chinh lai cho dung moi truong cua ban.
+#
+# VI DU 1 - Gmail (dung cho test/demo, KHONG nen dung Gmail ca nhan cho production that su):
+#   mail.smtp.host=smtp.gmail.com
+#   mail.smtp.port=587
+#   mail.smtp.username=your-account@gmail.com
+#   mail.smtp.password=<App Password 16 ky tu, KHONG phai mat khau Gmail thuong>
+#   -> Phai bat "2-Step Verification" roi tao "App Password" tai
+#      https://myaccount.google.com/apppasswords (Gmail chan dang nhap bang mat khau thuong tu code).
+#
+# VI DU 2 - SMTP noi bo cong ty / dich vu chuyen gui email nhu SendGrid, Amazon SES, Mailgun...
+#   (khuyen nghi cho production that su, on dinh va ty le vao Inbox tot hon Gmail ca nhan)
+#
+# VI DU 3 - Mailtrap / MailHog khi dev local (khong gui email that, chi de test khong lo thong tin that):
+#   mail.smtp.host=sandbox.smtp.mailtrap.io
+#   mail.smtp.port=2525
+
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=587
+mail.smtp.username=CHANGE_ME@example.com
+mail.smtp.password=
+mail.smtp.auth=true
+mail.smtp.starttls.enable=true
+
+# Dia chi + ten hien thi o cot "From" khi nguoi dung nhan email
+mail.from.address=CHANGE_ME@example.com
+mail.from.name=He thong Quan ly Co dong
+
+# Bat/tat gui email that su. De "false" khi dev local neu chua co SMTP that,
+# EmailService se chi log noi dung email ra console thay vi goi SMTP that.
+mail.enabled=false

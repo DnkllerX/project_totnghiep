@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+         https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+
+    <display-name>Shareholder Management System</display-name>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+        <cookie-config>
+            <!-- secure=false: MAC DINH cho dev local (http://localhost:8080, khong co HTTPS).
+                 Neu de true khi dev, browser se KHONG GUI cookie JSESSIONID qua HTTP -> login xong
+                 bi out lien tuc, tuong nham la bug.
+                 -> LUC DEPLOY PRODUCTION (Oracle Cloud, sau Cloudflare HTTPS): doi thanh true truoc
+                    khi build war, de cookie chi di qua HTTPS (chong session hijacking tren duong
+                    truyen khong ma hoa). Chi sua 1 dong duoi day, khong can sua gi khac. -->
+            <secure>false</secure>
+            <http-only>true</http-only>
+        </cookie-config>
+    </session-config>
+
+    <!--
+        404 (URL sai/thieu/thua, vd nguoi dung tu sua tay URL trong thanh dia chi) se khong con hien
+        trang loi mac dinh cua Tomcat nua, ma chuyen huong thong minh: da dang nhap -> ve dashboard
+        dung role; chua dang nhap -> ve trang chu. Xem ErrorRedirectServlet.
+    -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error-redirect</location>
+    </error-page>
+
+    <!-- ServletContextListener khoi dong Scheduler khi app start -->
+    <listener>
+        <listener-class>com.shareholder.scheduler.SchedulerContextListener</listener-class>
+    </listener>
+
+    <!-- Filter phan quyen theo role, ap dung cho toan bo /app/* -->
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.shareholder.filter.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/app/*</url-pattern>
+    </filter-mapping>
+
+    <!--
+        Bat buoc UTF-8 cho TOAN BO file .jsp trong du an - phong ngua loi hien thi sai tieng Viet
+        (mojibake) neu 1 file JSP nao do quen khai bao <%@ page pageEncoding="UTF-8" %> rieng
+        (da tung xay ra o vai file dua vao <%@ include %> header.jsp ma khong tu khai bao).
+    -->
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+    </jsp-config>
+
+    <!--
+        Chan truy cap TRUC TIEP qua URL vao login.jsp / register.jsp (file tinh trong webroot).
+        Nguoi dung PHAI di qua servlet /login, /register de moi luong (vd JWT reset-password link,
+        cac attribute request khac trong tuong lai) duoc xu ly dung truoc khi JSP render.
+        auth-constraint RONG (khong co role-name nao) = tu choi MOI request truc tiep, khong can
+        khai bao security realm/login-config. Forward noi bo tu LoginServlet/RegisterServlet
+        (dispatcher type FORWARD) KHONG bi anh huong vi khong khai bao <dispatcher>FORWARD</dispatcher>
+        - mac dinh constraint chi ap dung cho dispatcher REQUEST.
+    -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Block direct access to auth JSPs</web-resource-name>
+            <url-pattern>/login.jsp</url-pattern>
+            <url-pattern>/register.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint/>
+    </security-constraint>
+
+</web-app>

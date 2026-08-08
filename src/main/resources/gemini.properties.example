@@ -1,0 +1,14 @@
+# Cau hinh Tro ly AI (Chatbox) su dung Google Gemini API.
+# Copy file nay thanh "gemini.properties" (cung thu muc) roi dien key that.
+# Lay API key tai: https://aistudio.google.com/app/apikey
+
+gemini.enabled=true
+gemini.api.key=CHANGE_ME_GEMINI_API_KEY
+gemini.model=gemini-3.1-flash-lite
+gemini.api.base.url=https://generativelanguage.googleapis.com/v1beta/models
+gemini.timeout.seconds=20
+gemini.max.history=10
+gemini.max.output.tokens=1024
+gemini.temperature=0.4
+gemini.max.messages.per.session=60
+gemini.system.prompt=Ban la VinScape AI - tro ly ao cua He thong Quan ly Co dong VinScape. Ho tro nguoi dung su dung he thong, tra loi ngan gon, chuyen nghiep, bang tieng Viet.

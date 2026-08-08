@@ -1,0 +1,114 @@
+/* =========================================================
+   BO CUC DUNG CHUNG CHO CAC TRANG ADMIN / IT (sidebar + topbar + reset)
+   Duoc gop lai tu 11 trang JSP (truoc day moi trang tu khai bao rieng het
+   ~110 dong CSS giong het nhau -> kho bao tri, de lech khi sua 1 cho quen cho khac).
+   Cac trang chi con giu lai phan CSS DAC THU cho noi dung (vd .page-title, table, badge...).
+   ========================================================= */
+
+
+        /* =========================================================
+           GLOBAL RESET & LAYOUT CHUẨN
+           ========================================================= */
+        body, html {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            height: 100vh; 
+            overflow: hidden; 
+        }
+
+        .app-layout {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* =========================================================
+           1. SIDEBAR (MENU TRÁI)
+           ========================================================= */
+        .app-sidebar {
+            width: 250px;
+            background-color: #0f172a; 
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            border-right: 1px solid #1e293b;
+        }
+
+        .sb-brand {
+            padding: 24px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #38bdf8;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sb-nav {
+            flex: 1; overflow-y: auto; padding-top: 16px;
+        }
+        .sb-nav::-webkit-scrollbar { width: 4px; }
+        .sb-nav::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        .nav-section {
+            padding: 16px 24px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 24px; color: #cbd5e1; text-decoration: none;
+            font-size: 13.5px; font-weight: 500; transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover {
+            background-color: rgba(255,255,255,0.03);
+            color: #ffffff;
+        }
+        .nav-item.active {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border-left-color: #38bdf8;
+            font-weight: 600;
+        }
+        .nav-icon { width: 18px; height: 18px; opacity: 0.8; }
+
+        /* =========================================================
+           2. MAIN AREA (TOPBAR + DASHBOARD)
+           ========================================================= */
+        .app-main {
+            flex: 1; display: flex; flex-direction: column; overflow: hidden;
+            background-color: #f8fafc;
+        }
+
+        /* Topbar */
+        .app-topbar {
+            height: 64px; background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 32px; flex-shrink: 0;
+        }
+        .tb-breadcrumb { font-size: 14px; font-weight: 600; color: #0f172a; }
+        .tb-breadcrumb span { color: #64748b; font-weight: 400; }
+        
+        .tb-right { display: flex; align-items: center; gap: 20px; }
+        .tb-user { font-size: 13.5px; color: #64748b; }
+        .tb-user strong { color: #0f172a; font-weight: 600; }
+        .tb-logout {
+            border: 1px solid #ef4444; color: #ef4444; background: transparent;
+            padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;
+            text-decoration: none; transition: all 0.2s;
+        }
+        .tb-logout:hover { background-color: #fef2f2; }
+
+        /* Vùng nội dung Dashboard cuộn độc lập */
+        .vertical-dashboard {
+            flex: 1; overflow-y: auto; padding: 32px 40px; box-sizing: border-box;
+            background-color: #f8fafc;
+        }
+        .vertical-dashboard::-webkit-scrollbar { width: 6px; }
+        .vertical-dashboard::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
