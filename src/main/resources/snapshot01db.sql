@@ -5,7 +5,11 @@
 
 /* ------------------------------------------------------------
    1. USERS
-   ------------------------------------------------------------ */
+
+------------------------------------------------------------ */
+create database snapshot01db;
+go
+   
 CREATE TABLE USERS (
     user_id         INT IDENTITY(1,1) PRIMARY KEY,
     username        VARCHAR(50)  NOT NULL,
@@ -311,7 +315,8 @@ CREATE TABLE FINANCIAL_REPORTS (
     CONSTRAINT CHK_FinReports_Quarter CHECK (report_quarter BETWEEN 1 AND 4)
 );
 GO
-
+ALTER TABLE DOCUMENTS ADD created_by INT NULL REFERENCES USERS(user_id) ON DELETE SET NULL;
+ALTER TABLE FINANCIAL_REPORTS ADD created_by INT NULL REFERENCES USERS(user_id) ON DELETE SET NULL;
 /* ============================================================
    HET FILE - Thu tu tao bang da tuan thu FK dependency:
    USERS -> SHAREHOLDERS -> SHARES -> SHARE_SNAPSHOTS ->
